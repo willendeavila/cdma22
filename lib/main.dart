@@ -30,6 +30,14 @@ class _MyAppState extends State<MyApp> {
         title: Text("CDMA22 - Clientes"),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.create),
+            onPressed: () {
+              _addCliente(context);
+              //DBProvider.db.deleteAll();
+              //setState(() {});
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
               DBProvider.db.deleteAll();
@@ -79,6 +87,54 @@ class _MyAppState extends State<MyApp> {
           setState(() {});
         },
       ),
+
     );
+  }
+
+  Cliente novoCliente = new Cliente();
+  List str;
+
+  void _addCliente(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Dados Cliente"),
+          actions: <Widget>[
+            FlatButton(
+              //onPressed: () => null,
+              onPressed: () => _salvarCliente(),
+              child: Text("Incluir"),
+            ),
+            FlatButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancelar"),
+            ),
+          ],
+          content: TextField(
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: "Nome + Sobrenome",
+              hintText: "Digite aqui ...",
+            ),
+            onChanged: (valor) async {
+              
+              str = valor.split(" ");
+              novoCliente.nome = str[0];
+              novoCliente.sobrenome = str[1];
+              novoCliente.marcado = false;
+              //await DBProvider.db.newCliente(novoCliente);
+              //setState(() {});
+            },
+          ),
+        );
+      },
+    );
+  } // fim void addCliiente
+
+  _salvarCliente() async {
+    await DBProvider.db.newCliente(novoCliente);
+    setState(() {});
+    Navigator.of(context).pop();
   }
 }
